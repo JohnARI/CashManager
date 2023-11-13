@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
     
 env:
   MIRROR_URL: "git@github.com:EpitechMscProPromo2025/T-DEV-700-PAR_1.git"
