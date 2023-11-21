@@ -1,7 +1,11 @@
 package com.moulamanager.api.exceptions;
 
+import com.moulamanager.api.exceptions.cart.CartAlreadyCheckedOutException;
+import com.moulamanager.api.exceptions.cart.CartAlreadyExistsException;
+import com.moulamanager.api.exceptions.cart.CartNotFoundException;
 import com.moulamanager.api.exceptions.product.ProductAlreadyExistsException;
 import com.moulamanager.api.exceptions.product.ProductNotFoundException;
+import com.moulamanager.api.exceptions.user.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -22,6 +26,26 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = ProductAlreadyExistsException.class)
     public ResponseEntity<Object> handleProductAlreadyExistsException(ProductAlreadyExistsException exception) {
         return buildResponseException(exception, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value = CartNotFoundException.class)
+    public ResponseEntity<Object> handleCartNotFoundException(CartNotFoundException exception) {
+        return buildResponseException(exception, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = CartAlreadyExistsException.class)
+    public ResponseEntity<Object> handleCartAlreadyExistsException(CartAlreadyExistsException exception) {
+        return buildResponseException(exception, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value = CartAlreadyCheckedOutException.class)
+    public ResponseEntity<Object> handleCartAlreadyExistsException(CartAlreadyCheckedOutException exception) {
+        return buildResponseException(exception, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value = UserNotFoundException.class)
+    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException exception) {
+        return buildResponseException(exception, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = RuntimeException.class)
