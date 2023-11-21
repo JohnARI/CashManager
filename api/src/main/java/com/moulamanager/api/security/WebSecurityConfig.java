@@ -59,9 +59,9 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/auth/**").permitAll()
-                                .requestMatchers("/hello/**").permitAll()
-                                .anyRequest().authenticated()
+                        // TODO: Check JWT before each request (except login and register) when the verification is implemented, currently all requests are permitted.
+                                auth.requestMatchers("/**").permitAll()
+                                        .anyRequest().authenticated()
                 );
 
         http.authenticationProvider(authenticationProvider());
