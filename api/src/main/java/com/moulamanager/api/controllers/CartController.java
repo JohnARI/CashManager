@@ -1,5 +1,7 @@
 package com.moulamanager.api.controllers;
 
+import com.moulamanager.api.dto.cart.request.UpdateCartTotalPriceRequestDTO;
+import com.moulamanager.api.dto.cart.result.CartResultDTO;
 import com.moulamanager.api.models.CartModel;
 import com.moulamanager.api.services.cart.CartService;
 import org.springframework.http.ResponseEntity;
@@ -18,29 +20,34 @@ public class CartController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CartModel>> getAllCarts() {
+    public ResponseEntity<List<CartResultDTO>> getAllCarts() {
         return ResponseEntity.ok(cartService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CartModel> getCartById(@PathVariable long id) {
+    public ResponseEntity<CartResultDTO> getCartById(@PathVariable long id) {
         return ResponseEntity.ok(cartService.findById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<CartModel> createCart(@RequestBody CartModel cart) {
-        return ResponseEntity.ok(cartService.save(cart));
+    @PostMapping("/{userId}")
+    public ResponseEntity<CartResultDTO> createCart(@PathVariable long userId) {
+        return ResponseEntity.ok(cartService.save(userId));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<CartModel> updateCart(@RequestBody CartModel cart, @PathVariable long id) {
+    public ResponseEntity<CartResultDTO> updateCart(@RequestBody CartModel cart, @PathVariable long id) {
         cart.setId(id);
         return ResponseEntity.ok(cartService.update(cart));
+    }
+
+    @PatchMapping("/{cartId}/total-price")
+    public ResponseEntity<CartResultDTO> updateCartTotalPrice(@RequestBody UpdateCartTotalPriceRequestDTO cart, @PathVariable long cartId) {
+        return ResponseEntity.ok(cartService.updateCartTotalPrice(cartId, cart.getTotalPrice()));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCart(@PathVariable long id) {
         cartService.delete(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

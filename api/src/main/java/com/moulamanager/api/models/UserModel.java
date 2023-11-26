@@ -10,16 +10,14 @@ import lombok.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = "email") })
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class UserModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String username;
     private String email;
-    @JsonIgnore
     private String password;
 
     public UserModel(String username, String email, String password) {

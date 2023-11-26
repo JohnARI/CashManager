@@ -1,8 +1,8 @@
 package com.moulamanager.api.models;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +12,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "cart")
 public class CartModel {
 
@@ -19,15 +20,24 @@ public class CartModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", unique = true)
-    @JsonIdentityReference(alwaysAsId = true)
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private UserModel user;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
-    private Date createdAt;
+    private Date createdAt = new Date();
 
     @Column(name = "is_checked_out")
-    private boolean isCheckedOut;
+    private boolean checkedOut = false;
+
+    @Column(name = "total_price")
+    private double totalPrice = 0.0;
+
+    public void setTotalPrice(double totalPrice) {
+        if (totalPrice < 0) {
+            throw new IllegalArgumentException("Total price cannot be negative");
+        }
+        this.totalPrice = totalPrice;
+    }
 }
