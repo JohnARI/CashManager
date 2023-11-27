@@ -1,8 +1,7 @@
 package com.moulamanager.api.services.cartItem;
 
-import com.moulamanager.api.dto.CartItemResultDTO;
-import com.moulamanager.api.dto.UpdateCartItemQuantityDTO;
-import com.moulamanager.api.models.CartItemModel;
+import com.moulamanager.api.dto.cartItem.result.CartItemResultDTO;
+import com.moulamanager.api.dto.cartItem.request.UpdateCartItemQuantityDTO;
 
 import java.util.List;
 

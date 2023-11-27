@@ -1,4 +1,4 @@
-package com.moulamanager.api.dto;
+package com.moulamanager.api.dto.cartItem.request;
 
 import lombok.Data;
 
