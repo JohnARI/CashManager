@@ -1,4 +1,4 @@
-package com.moulamanager.api.dto;
+package com.moulamanager.api.dto.cartItem.result;
 
 import com.moulamanager.api.dto.cart.result.CartResultDTO;
 import com.moulamanager.api.models.CartItemModel;
