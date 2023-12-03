@@ -4,6 +4,8 @@ import com.moulamanager.api.dto.cartItem.result.CartItemResultDTO;
 import com.moulamanager.api.dto.cartItem.request.UpdateCartItemQuantityDTO;
 import com.moulamanager.api.models.CartItemModel;
 import com.moulamanager.api.services.cartItem.CartItemService;
+import com.moulamanager.api.services.jwt.JwtUtils;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,15 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/carts/items")
 public class CartItemController {
 
     private final CartItemService cartItemService;
+    private final JwtUtils jwtUtils;
 
-
-    public CartItemController(CartItemService cartItemService) {
-        this.cartItemService = cartItemService;
-    }
 
     /**
      * Gets all cart items.
@@ -40,7 +40,8 @@ public class CartItemController {
     @GetMapping("/me")
     public ResponseEntity<Page<CartItemResultDTO>> getAllCartItemsByUser(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestHeader("Authorization") String userToken) {
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(cartItemService.findAllByUser(pageable, userToken));
+        long userId = jwtUtils.getUserIdFromJwtToken(userToken);
+        return ResponseEntity.ok(cartItemService.findAllByUser(pageable, userId));
     }
 
     /**
@@ -74,12 +75,14 @@ public class CartItemController {
      */
     @PostMapping("/{productId}")
     public ResponseEntity<CartItemResultDTO> addProductToCart(@PathVariable long productId, @RequestHeader("Authorization") String userToken) {
-        return ResponseEntity.ok(cartItemService.addProductToCart(productId, userToken));
+        long userId = jwtUtils.getUserIdFromJwtToken(userToken);
+        return ResponseEntity.ok(cartItemService.addProductToCart(productId, userId));
     }
 
     @PostMapping("/barcode/{barcode}")
     public ResponseEntity<CartItemResultDTO> addProductToCartWithBarcode(@PathVariable String barcode, @RequestHeader("Authorization") String userToken) {
-        return ResponseEntity.ok(cartItemService.addProductToCartWithBarcode(barcode, userToken));
+        long userId = jwtUtils.getUserIdFromJwtToken(userToken);
+        return ResponseEntity.ok(cartItemService.addProductToCartWithBarcode(barcode, userId));
     }
 
 
@@ -102,7 +105,8 @@ public class CartItemController {
      */
     @PatchMapping("/{productId}")
     public ResponseEntity<CartItemResultDTO> updateProductQuantity(@PathVariable long productId, @RequestBody UpdateCartItemQuantityDTO quantity, @RequestHeader("Authorization") String userToken) {
-        return ResponseEntity.ok(cartItemService.updateProductQuantity(productId, quantity, userToken));
+        long userId = jwtUtils.getUserIdFromJwtToken(userToken);
+        return ResponseEntity.ok(cartItemService.updateProductQuantity(productId, quantity, userId));
     }
 
     /**
@@ -120,7 +124,8 @@ public class CartItemController {
      */
     @DeleteMapping("/{productId}")
     public ResponseEntity<CartItemResultDTO> removeProductFromCart(@PathVariable long productId, @RequestHeader("Authorization") String userToken) {
-        cartItemService.removeProductFromCart(productId, userToken);
+        long userId = jwtUtils.getUserIdFromJwtToken(userToken);
+        cartItemService.deleteProductFromCart(productId, userId);
         return ResponseEntity.noContent().build();
     }
 
@@ -138,7 +143,8 @@ public class CartItemController {
      */
     @DeleteMapping
     public ResponseEntity<CartItemResultDTO> deleteAllProductsFromCart(@RequestHeader("Authorization") String userToken) {
-        cartItemService.deleteAllProductsFromCart(userToken);
+        long userId = jwtUtils.getUserIdFromJwtToken(userToken);
+        cartItemService.deleteAllProductsFromCart(userId);
         return ResponseEntity.noContent().build();
     }
 
