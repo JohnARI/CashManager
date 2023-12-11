@@ -2,6 +2,7 @@ package com.example.moulamanagerclient.data.repositories.auth
 
 import com.example.moulamanagerclient.data.model.auth.LoginRequest
 import com.example.moulamanagerclient.data.model.auth.LoginResponse
+import com.example.moulamanagerclient.data.model.auth.User
 import com.example.moulamanagerclient.utils.Retrofit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,15 +17,12 @@ class AuthRepository {
 
             return response?.let {
                 LoginResponse(
-                    username = it.username,
-                    accessToken = it.accessToken,
-                    email = it.email,
-                    id= it.id,
+                    token = it.token,
+                    user = it.user
                 )
             }
         } catch (e: Exception) {
             throw e
         }
     }
-
 }

@@ -4,13 +4,22 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class LoginResponse(
+data class User(
+    @Json(name = "id")
+    var id: Int,
+
     @Json(name = "username")
     var username: String,
-    @Json(name = "accessToken")
-    var accessToken: String,
+
     @Json(name = "email")
-    var email: String,
-    @Json(name = "id")
-    var id: Int
-    )
+    var email: String
+)
+
+@JsonClass(generateAdapter = true)
+data class LoginResponse(
+    @Json(name = "token")
+    var token: String,
+
+    @Json(name = "user")
+    var user: User
+)
