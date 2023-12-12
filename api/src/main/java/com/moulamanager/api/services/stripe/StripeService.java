@@ -14,6 +14,9 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 @Service
 public class StripeService {
 
@@ -36,16 +39,27 @@ public class StripeService {
     }
 
     public PaymentIntent createPaymentIntent(long userId, String currency) throws StripeException {
-        UserResultDTO user = UserResultDTO.fromUserModel(userService.findById(userId));
-        double calculatedAmount = calculateOrderAmount(userId);
-        PaymentIntentCreateParams params =
-                PaymentIntentCreateParams.builder()
-                        .setAmount((long) calculatedAmount * 100)
-                        .setCurrency(currency)
-                        .setCustomer(customerService.findOrCreateCustomer(user.getEmail(), user.getUsername()).getId())
-                        .build();
-
+        UserResultDTO user = getUser(userId);
+        BigDecimal amountInCents = calculateAmountInCents(userId);
+        PaymentIntentCreateParams params = createPaymentIntentParams(user, amountInCents, currency);
         return PaymentIntent.create(params);
+    }
+
+    private UserResultDTO getUser(long userId) {
+        return UserResultDTO.fromUserModel(userService.findById(userId));
+    }
+
+    private BigDecimal calculateAmountInCents(long userId) {
+        BigDecimal calculatedAmount = BigDecimal.valueOf(calculateOrderAmount(userId));
+        return calculatedAmount.multiply(BigDecimal.valueOf(100)).setScale(0, RoundingMode.HALF_UP);
+    }
+
+    private PaymentIntentCreateParams createPaymentIntentParams(UserResultDTO user, BigDecimal amountInCents, String currency) throws StripeException {
+        return PaymentIntentCreateParams.builder()
+                .setAmount(amountInCents.longValue())
+                .setCurrency(currency)
+                .setCustomer(customerService.findOrCreateCustomer(user.getEmail(), user.getUsername()).getId())
+                .build();
     }
 
     private double calculateOrderAmount(long userId) {

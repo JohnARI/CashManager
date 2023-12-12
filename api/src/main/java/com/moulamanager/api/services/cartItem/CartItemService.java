@@ -89,9 +89,9 @@ public class CartItemService extends AbstractService<CartItemModel> implements I
      */
     @Transactional
     @Override
-    public CartItemResultDTO addProductToCart(long productId, long userId) {
+    public CartItemResultDTO addProductToCart(long productId, int quantity, long userId) {
         ProductModel product = findProductById(productId);
-        return addProductToCart(product, userId);
+        return addProductToCart(product, quantity, userId);
     }
 
     /**
@@ -101,9 +101,9 @@ public class CartItemService extends AbstractService<CartItemModel> implements I
      * @param userId  The id of the user
      * @return The created cart item
      */
-    public CartItemResultDTO addProductToCartWithBarcode(String barcode, long userId) {
+    public CartItemResultDTO addProductToCartWithBarcode(String barcode, int quantity, long userId) {
         ProductModel product = productService.findByBarcode(barcode);
-        return addProductToCart(product, userId);
+        return addProductToCart(product, quantity, userId);
     }
 
     /**
@@ -186,10 +186,10 @@ public class CartItemService extends AbstractService<CartItemModel> implements I
      * @return The created cart item
      * @throws CartItemAlreadyExistsException If the product already exists in the cart
      */
-    private CartItemResultDTO addProductToCart(ProductModel product, long userId) {
+    private CartItemResultDTO addProductToCart(ProductModel product, int quantity, long userId) {
         CartResultDTO cart = getOrCreateCartForUser(userId);
         checkProductExistsInCart(cart, product);
-        CartItemModel cartItem = getOrCreateCartItemForProductInCart(product, cart);
+        CartItemModel cartItem = getOrCreateCartItemForProductInCart(product, quantity, cart);
         return mapToCartItemResultDTO(cartItem);
     }
 
@@ -235,23 +235,20 @@ public class CartItemService extends AbstractService<CartItemModel> implements I
         }
     }
 
-    private double calculateTotalPrice(CartItemResultDTO cartItem) {
-        return cartItem.getProduct().getPrice() * cartItem.getQuantity();
-    }
-
     private CartResultDTO createNewCart(long userId) {
         return cartService.save(userId);
     }
 
-    private CartItemModel getOrCreateCartItemForProductInCart(ProductModel product, CartResultDTO cart) {
+    private CartItemModel getOrCreateCartItemForProductInCart(ProductModel product, int quantity, CartResultDTO cart) {
         return cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId())
-                .orElseGet(() -> createNewCartItem(product, cart));
+                .orElseGet(() -> createNewCartItem(product, quantity, cart));
     }
 
-    private CartItemModel createNewCartItem(ProductModel product, CartResultDTO cart) {
+    private CartItemModel createNewCartItem(ProductModel product, int quantity, CartResultDTO cart) {
         CartItemModel newCartItem = new CartItemModel();
         newCartItem.setProduct(product);
         newCartItem.setCart(CartResultDTO.toCartModel(cart));
+        newCartItem.setQuantity(quantity);
         return cartItemRepository.save(newCartItem);
     }
 

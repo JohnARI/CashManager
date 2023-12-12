@@ -15,8 +15,8 @@ public interface ICartItemService {
     CartItemResultDTO findByCartIdAndProductId(long cartId, long productId);
 
     // Add methods
-    CartItemResultDTO addProductToCart(long productId, long userId);
-    CartItemResultDTO addProductToCartWithBarcode(String barcode, long userId);
+    CartItemResultDTO addProductToCart(long productId, int quantity, long userId);
+    CartItemResultDTO addProductToCartWithBarcode(String barcode, int quantity, long userId);
 
     // Update methods
     CartItemResultDTO updateProductQuantity(long productId, UpdateCartItemQuantityDTO quantity, long userId);
