@@ -76,15 +76,15 @@ public class CartItemController {
      * @return A {@link ResponseEntity} containing the {@link CartItemResultDTO} of the added product.
      */
     @PostMapping("/{productId}")
-    public ResponseEntity<CartItemResultDTO> addProductToCart(@PathVariable long productId, @RequestHeader("Authorization") String userToken) {
+    public ResponseEntity<CartItemResultDTO> addProductToCart(@PathVariable long productId, @RequestBody UpdateCartItemQuantityDTO quantity, @RequestHeader("Authorization") String userToken) {
         long userId = jwtUtils.getUserIdFromJwtToken(userToken);
-        return ResponseEntity.ok(cartItemService.addProductToCart(productId, userId));
+        return ResponseEntity.ok(cartItemService.addProductToCart(productId, quantity.getQuantity(), userId));
     }
 
     @PostMapping("/barcode/{barcode}")
-    public ResponseEntity<CartItemResultDTO> addProductToCartWithBarcode(@PathVariable String barcode, @RequestHeader("Authorization") String userToken) {
+    public ResponseEntity<CartItemResultDTO> addProductToCartWithBarcode(@PathVariable String barcode,@RequestBody UpdateCartItemQuantityDTO quantity, @RequestHeader("Authorization") String userToken) {
         long userId = jwtUtils.getUserIdFromJwtToken(userToken);
-        return ResponseEntity.ok(cartItemService.addProductToCartWithBarcode(barcode, userId));
+        return ResponseEntity.ok(cartItemService.addProductToCartWithBarcode(barcode, quantity.getQuantity(), userId));
     }
 
 
