@@ -4,19 +4,16 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -37,7 +34,6 @@ fun ScanComponent(
 ) {
     Text("Scan")
 
-
     val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
 
     if (cameraPermissionState.status.isGranted) {
@@ -53,8 +49,10 @@ fun ScanComponent(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Scan(scanViewModel: ScanViewModel) {
+    val haptic = LocalHapticFeedback.current
     val localContext = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val cameraProviderFuture = remember {
@@ -62,6 +60,10 @@ fun Scan(scanViewModel: ScanViewModel) {
     }
 
     val currentEan = scanViewModel.ean.collectAsState()
+
+    if (currentEan.value.isNotEmpty()) {
+        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+    }
 
     AndroidView(
         modifier = Modifier.fillMaxSize(),
@@ -95,10 +97,24 @@ fun Scan(scanViewModel: ScanViewModel) {
         }
     )
 
-    ExtendedFloatingActionButton(
-        onClick = {  },
-        icon = { Icon(Icons.Filled.Add, currentEan.value) },
-        text = { Text(text = currentEan.value) },
-    )
+    val modalBottomSheetState = rememberModalBottomSheetState()
+
+    if (currentEan.value.isNotEmpty()) {
+        ModalBottomSheet(
+            modifier = Modifier.fillMaxHeight(),
+            onDismissRequest = {
+                scanViewModel.setEan("") },
+            sheetState = modalBottomSheetState,
+            dragHandle = { BottomSheetDefaults.DragHandle() },
+        ) {
+            ExtendedFloatingActionButton(
+            onClick = {
+                scanViewModel.setEan("")
+            },
+            icon = { Icon(Icons.Filled.Add, currentEan.value) },
+            text = { Text(text = currentEan.value) },
+
+        )}
+    }
 
 }

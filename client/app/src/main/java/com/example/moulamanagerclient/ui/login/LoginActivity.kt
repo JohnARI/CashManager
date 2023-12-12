@@ -46,11 +46,6 @@ fun LoginActivity(viewModel: LoginViewModel = viewModel()) {
             ) {
                 Column {
                     OutlinedTextField(
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            textColor = Colors.BLACK_4,
-                            focusedBorderColor = colorResource(id = R.color.black_4),
-                            unfocusedBorderColor = colorResource(id = R.color.black_4),
-                        ),
                         value = inputUsername,
                         onValueChange = { viewModel.setUsername(it)},
                         label = { Text(text = "Username") },
