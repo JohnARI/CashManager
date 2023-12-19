@@ -1,5 +1,7 @@
 package com.example.moulamanagerclient.ui.login
 
+import android.app.Application
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moulamanagerclient.data.model.auth.LoginRequest
@@ -7,6 +9,8 @@ import com.example.moulamanagerclient.data.model.auth.LoginResponse
 import com.example.moulamanagerclient.data.repositories.ApiHeader
 import com.example.moulamanagerclient.data.repositories.auth.AuthRepository
 import com.example.moulamanagerclient.utils.Retrofit
+import com.example.moulamanagerclient.utils.SharedPreferences
+import dagger.hilt.android.internal.Contexts.getApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,7 +32,7 @@ class LoginViewModel: ViewModel() {
     fun setPassword(password:String){
         _inputPassword.value = password;
     }
-    fun performLogin(username:String, password:String) {
+    fun performLogin(context: Context) {
         val auth = AuthRepository()
         val request = LoginRequest(
             password = _inputPassword.value,
@@ -36,14 +40,16 @@ class LoginViewModel: ViewModel() {
         )
 
         viewModelScope.launch {
-            try {
-                val response = auth.login(request)
-                withContext(Dispatchers.Main) {
-                    _loginResult.value = response
-                }
-                response?.token?.let { ApiHeader.setAccessToken(it) };
-            } catch (e: Exception) {
+            val response = auth.login(request)
+            withContext(Dispatchers.Main) {
+                _loginResult.value = response
             }
+            SharedPreferences.setValue(context, "Authorization", ApiHeader.getAccessToken)
+            response?.token?.let { ApiHeader.setAccessToken(it) };
+
+//            token?.let{
+//                ApiHeader.setAccessToken(it)
+//        }
         }
     }
 }

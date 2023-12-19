@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextDecoration
@@ -27,6 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.moulamanagerclient.R
 import com.example.moulamanagerclient.data.model.auth.LoginResponse
 import com.example.moulamanagerclient.ui.theme.Colors
+import com.example.moulamanagerclient.utils.SharedPreferences
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -36,6 +38,8 @@ fun LoginActivity(viewModel: LoginViewModel = viewModel()) {
     val loginResult by viewModel.loginResult.collectAsState()
     val inputPassword by viewModel.inputPassword.collectAsState()
     val inputUsername by viewModel.inputUsername.collectAsState()
+
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -107,7 +111,7 @@ fun LoginActivity(viewModel: LoginViewModel = viewModel()) {
                             shape = RoundedCornerShape(10),
                             border = BorderStroke(1.dp, Colors.YELLOW_1),
                             onClick = {
-                                viewModel.performLogin(inputUsername, inputPassword)
+                                viewModel.performLogin(context=context)
                             }
                         ) {
                             Text("Login", color = Colors.WHITE)
