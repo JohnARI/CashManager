@@ -39,14 +39,10 @@ fun ScanComponent(
 
     val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
 
-    if (cameraPermissionState.status.isGranted) {
-        Scan(scanViewModel)
-    } else if (cameraPermissionState.status.shouldShowRationale) {
-        Text("Camera Permission permanently denied")
-    } else {
-        SideEffect {
-            cameraPermissionState.run { launchPermissionRequest() }
-        }
+    if (cameraPermissionState.status.isGranted) { Scan(scanViewModel) }
+    else if (cameraPermissionState.status.shouldShowRationale) { Text("Camera Permission permanently denied") }
+    else {
+        SideEffect { cameraPermissionState.run { launchPermissionRequest() }  }
         Text("No Camera Permission")
     }
 
@@ -64,13 +60,14 @@ fun Scan(scanViewModel: ScanViewModel) {
         ProcessCameraProvider.getInstance(localContext)
     }
 
-    Log.d("AMOUNT", scanViewModel.getAmount())
-
     val currentEan = scanViewModel.ean.collectAsState()
     val currentAmount = scanViewModel.amount.collectAsState()
+    val productResult = scanViewModel.productResult.collectAsState()
 
     if (currentEan.value.isNotEmpty()) {
         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+
+        scanViewModel.getProduct(currentEan.value)
     }
 
     AndroidView(
@@ -131,13 +128,13 @@ fun Scan(scanViewModel: ScanViewModel) {
 
             Text(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                text = "Name: ${currentEan.value}",
+                text = "Name: ${productResult.value?.name ?: ""}",
                 fontSize = 16.sp
             )
 
             Text(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                text = "Price: ${currentEan.value}",
+                text = "Name: ${productResult.value?.price ?: ""}",
                 fontSize = 16.sp
             )
 
@@ -154,7 +151,7 @@ fun Scan(scanViewModel: ScanViewModel) {
 
             Text(
                 modifier = Modifier.padding(16.dp),
-                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget ultricies ultrices, nunc nisl aliquam nunc, vitae aliquam nisl nisl vitae nisl. Donec euismod, nisl eget ultricies ultrices, nunc nisl aliquam nunc, vitae aliquam nisl nisl vitae nisl.",
+                text = "Name: ${productResult.value?.description ?: ""}",
                 fontSize = 16.sp,
                 lineHeight = 30.sp,
             )
@@ -178,13 +175,13 @@ fun Scan(scanViewModel: ScanViewModel) {
 
                 Text(
                     modifier = Modifier.padding(start = 16.dp),
-                    text = "x ${currentEan.value}",
+                    text = "x ${productResult.value?.name ?: ""}",
                     fontSize = 16.sp
                 )
 
                 Text(
                     modifier = Modifier.padding(start = 16.dp),
-                    text = "$14.49",
+                    text = "${productResult.value?.price?.times(currentAmount.value.toIntOrNull() ?: 0) ?: 0}",
                     fontSize = 16.sp
                 )
             }
