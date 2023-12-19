@@ -34,7 +34,7 @@ fun NavigationHost(navigationController: NavHostController) {
             }
 
             composable("scan") {
-                ScanComponent(navigationController)
+                ScanComponent()
             }
 
             composable("checkout") {
