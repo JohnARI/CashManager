@@ -6,6 +6,7 @@ import com.example.moulamanagerclient.data.model.auth.LoginRequest
 import com.example.moulamanagerclient.data.model.auth.LoginResponse
 import com.example.moulamanagerclient.data.repositories.ApiHeader
 import com.example.moulamanagerclient.data.repositories.auth.AuthRepository
+import com.example.moulamanagerclient.utils.Retrofit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,8 +31,8 @@ class LoginViewModel: ViewModel() {
     fun performLogin(username:String, password:String) {
         val auth = AuthRepository()
         val request = LoginRequest(
-            password = "test2",
-            username = "test2"
+            password = _inputPassword.value,
+            username = _inputUsername.value
         )
 
         viewModelScope.launch {
@@ -46,3 +47,4 @@ class LoginViewModel: ViewModel() {
         }
     }
 }
+
