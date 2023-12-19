@@ -20,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class CartItemService extends AbstractService<CartItemModel> implements ICartItemService {
@@ -87,9 +89,9 @@ public class CartItemService extends AbstractService<CartItemModel> implements I
      */
     @Transactional
     @Override
-    public CartItemResultDTO addProductToCart(long productId, long userId) {
+    public CartItemResultDTO addProductToCart(long productId, int quantity, long userId) {
         ProductModel product = findProductById(productId);
-        return addProductToCart(product, userId);
+        return addProductToCart(product, quantity, userId);
     }
 
     /**
@@ -99,9 +101,9 @@ public class CartItemService extends AbstractService<CartItemModel> implements I
      * @param userId  The id of the user
      * @return The created cart item
      */
-    public CartItemResultDTO addProductToCartWithBarcode(String barcode, long userId) {
+    public CartItemResultDTO addProductToCartWithBarcode(String barcode, int quantity, long userId) {
         ProductModel product = productService.findByBarcode(barcode);
-        return addProductToCart(product, userId);
+        return addProductToCart(product, quantity, userId);
     }
 
     /**
@@ -122,12 +124,10 @@ public class CartItemService extends AbstractService<CartItemModel> implements I
 
         CartResultDTO cart = findCartByUserIdAndNotCheckedOut(userId);
         CartItemResultDTO cartItem = findByCartIdAndProductId(cart.getId(), productId);
+
         checkIfSameQuantity(quantity.getQuantity(), cartItem);
 
-        double priceDifference = calculatePriceDifference(cartItem, quantity.getQuantity());
         updateCartItemQuantity(cartItem, quantity.getQuantity());
-        updateCartTotalPrice(cart, cart.getTotalPrice() + priceDifference);
-        cartItem.getCart().setTotalPrice(cart.getTotalPrice());
 
         return cartItem;
     }
@@ -143,7 +143,6 @@ public class CartItemService extends AbstractService<CartItemModel> implements I
     public void deleteProductFromCart(long productId, long userId) {
         CartResultDTO cart = getCartForUser(userId);
         CartItemResultDTO cartItem = findByCartIdAndProductId(cart.getId(), productId);
-        updateCartTotalPrice(cart, cart.getTotalPrice() - calculateTotalPrice(cartItem));
         cartItemRepository.delete(mapToCartItemModel(cartItem));
     }
 
@@ -161,7 +160,20 @@ public class CartItemService extends AbstractService<CartItemModel> implements I
             throw new RuntimeException("Cart is empty");
         }
         cartItemRepository.deleteAllByCartId(cart.getId());
-        updateCartTotalPrice(cart, 0);
+    }
+
+    /**
+     * Calculate the total price of the cart of the user
+     *
+     * @param userId The id of the user
+     * @return The total price of the cart
+     */
+    public double calculateCartTotalPrice(long userId) {
+        CartResultDTO cart = getCartForUser(userId);
+        List<CartItemModel> cartItems = cartItemRepository.findAllByCartId(cart.getId(), Pageable.unpaged()).getContent();
+        return cartItems.stream()
+                .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
+                .sum();
     }
 
     /**
@@ -174,11 +186,10 @@ public class CartItemService extends AbstractService<CartItemModel> implements I
      * @return The created cart item
      * @throws CartItemAlreadyExistsException If the product already exists in the cart
      */
-    private CartItemResultDTO addProductToCart(ProductModel product, long userId) {
+    private CartItemResultDTO addProductToCart(ProductModel product, int quantity, long userId) {
         CartResultDTO cart = getOrCreateCartForUser(userId);
         checkProductExistsInCart(cart, product);
-        CartItemModel cartItem = getOrCreateCartItemForProductInCart(product, cart);
-        updateCartTotalPrice(cart, cart.getTotalPrice() + product.getPrice());
+        CartItemModel cartItem = getOrCreateCartItemForProductInCart(product, quantity, cart);
         return mapToCartItemResultDTO(cartItem);
     }
 
@@ -224,41 +235,26 @@ public class CartItemService extends AbstractService<CartItemModel> implements I
         }
     }
 
-    private double calculatePriceDifference(CartItemResultDTO cartItem, int newQuantity) {
-        double productPrice = cartItem.getProduct().getPrice();
-        int oldQuantity = cartItem.getQuantity();
-        return productPrice * (newQuantity - oldQuantity);
-    }
-
-    private double calculateTotalPrice(CartItemResultDTO cartItem) {
-        return cartItem.getProduct().getPrice() * cartItem.getQuantity();
-    }
-
     private CartResultDTO createNewCart(long userId) {
         return cartService.save(userId);
     }
 
-    private CartItemModel getOrCreateCartItemForProductInCart(ProductModel product, CartResultDTO cart) {
+    private CartItemModel getOrCreateCartItemForProductInCart(ProductModel product, int quantity, CartResultDTO cart) {
         return cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId())
-                .orElseGet(() -> createNewCartItem(product, cart));
+                .orElseGet(() -> createNewCartItem(product, quantity, cart));
     }
 
-    private CartItemModel createNewCartItem(ProductModel product, CartResultDTO cart) {
+    private CartItemModel createNewCartItem(ProductModel product, int quantity, CartResultDTO cart) {
         CartItemModel newCartItem = new CartItemModel();
         newCartItem.setProduct(product);
         newCartItem.setCart(CartResultDTO.toCartModel(cart));
-        newCartItem.getCart().setTotalPrice(newCartItem.getCart().getTotalPrice() + product.getPrice());
+        newCartItem.setQuantity(quantity);
         return cartItemRepository.save(newCartItem);
     }
 
     private void updateCartItemQuantity(CartItemResultDTO cartItem, int quantity) {
         cartItem.setQuantity(quantity);
         cartItemRepository.save(mapToCartItemModel(cartItem));
-    }
-
-    private void updateCartTotalPrice(CartResultDTO cart, double totalPrice) {
-        cart.setTotalPrice(totalPrice);
-        cartService.update(CartResultDTO.toCartModel(cart));
     }
 
     private CartItemResultDTO mapToCartItemResultDTO(CartItemModel cartItem) {
