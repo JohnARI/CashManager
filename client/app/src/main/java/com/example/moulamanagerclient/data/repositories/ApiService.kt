@@ -1,10 +1,13 @@
 package com.example.moulamanagerclient.data.repositories
 
-//import retrofit2.http.GET
+import com.example.moulamanagerclient.data.model.Pagination
 import com.example.moulamanagerclient.data.model.auth.LoginRequest
 import com.example.moulamanagerclient.data.model.auth.LoginResponse
 import com.example.moulamanagerclient.data.model.product.ProductResponse
 import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.*
 
 interface ApiService {

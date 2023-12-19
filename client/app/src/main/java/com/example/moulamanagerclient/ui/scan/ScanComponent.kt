@@ -181,7 +181,7 @@ fun Scan(scanViewModel: ScanViewModel) {
 
                 Text(
                     modifier = Modifier.padding(start = 16.dp),
-                    text = "${productResult.value?.price?.times(currentAmount.value.toIntOrNull() ?: 0) ?: 0}",
+                    text = "${productResult.value?.price ?: ""}",
                     fontSize = 16.sp
                 )
             }
@@ -203,7 +203,7 @@ fun Scan(scanViewModel: ScanViewModel) {
 
                 Text(
                     modifier = Modifier.padding(start = 16.dp),
-                    text = "$14.49",
+                    text = "$${productResult.value?.price?.times(currentAmount.value.toIntOrNull() ?: 0) ?: 0}",
                     fontSize = 16.sp
                 )
             }
