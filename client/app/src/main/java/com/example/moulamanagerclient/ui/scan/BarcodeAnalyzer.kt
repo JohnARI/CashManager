@@ -2,8 +2,6 @@ package com.example.moulamanagerclient.ui.scan
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.example.moulamanagerclient.ui.home.ScanViewModel
@@ -17,7 +15,7 @@ class BarcodeAnalyzer(private val context: Context, private var scanViewModel: S
         .setBarcodeFormats(Barcode.FORMAT_EAN_13)
         .build()
 
-    private lateinit var toast: Toast
+//    private lateinit var toast: Toast
     private val scanner = BarcodeScanning.getClient(options)
 
     @SuppressLint("UnsafeOptInUsageError")
@@ -33,12 +31,12 @@ class BarcodeAnalyzer(private val context: Context, private var scanViewModel: S
                     ?.mapNotNull { it.rawValue }
                     ?.joinToString(",")
                     ?.let {
-                        if (::toast.isInitialized) { toast.cancel() }
+//                        if (::toast.isInitialized) { toast.cancel() }
 
                         scanViewModel.setEan(it)
 
-                        toast = Toast.makeText(context, it, Toast.LENGTH_SHORT)
-                        toast.show()
+//                        toast = Toast.makeText(context, it, Toast.LENGTH_SHORT)
+//                        toast.show()
                     }
             }.addOnCompleteListener {
                 imageProxy.close()

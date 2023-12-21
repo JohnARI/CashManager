@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit
 object Retrofit {
     private val builder: OkHttpClient.Builder = OkHttpClient().newBuilder()
     private val loggingInterceptor = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
-
     init {
         builder.connectTimeout(3, TimeUnit.SECONDS)
             .readTimeout(20, TimeUnit.SECONDS)

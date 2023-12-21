@@ -19,6 +19,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -77,6 +78,7 @@ fun LoginActivity(viewModel: LoginViewModel = viewModel()) {
                         Text(modifier = Modifier.drawBehind {
                             val strokeWidthPx = 1.dp.toPx()
                             val verticalOffset = size.height - 2.sp.toPx()
+
                             drawLine(
                                 color = Colors.YELLOW_1,
                                 strokeWidth = strokeWidthPx,
@@ -88,20 +90,18 @@ fun LoginActivity(viewModel: LoginViewModel = viewModel()) {
                             color = Colors.WHITE,
                             text = "Sign-in")
                         OutlinedTextField(
-                            colors = TextFieldDefaults.outlinedTextFieldColors(
-                                textColor = Colors.BLACK_4,
-                                focusedBorderColor = colorResource(id = R.color.black_4),
-                                unfocusedBorderColor = colorResource(id = R.color.black_4),
+                            textStyle = TextStyle(
+                                color = Colors.BLACK_4,
+                                textDecoration = TextDecoration.None
                             ),
                             value = inputUsername,
                             onValueChange = { viewModel.setUsername(it)},
                             label = { Text(text = "Username") },
                         )
                         OutlinedTextField(
-                            colors = TextFieldDefaults.outlinedTextFieldColors(
-                                textColor = Colors.BLACK_4,
-                                focusedBorderColor = colorResource(id = R.color.black_4),
-                                unfocusedBorderColor = colorResource(id = R.color.black_4),
+                            textStyle = TextStyle(
+                                color = Colors.BLACK_4,
+                                textDecoration = TextDecoration.None
                             ),
                             value = inputPassword,
                             onValueChange = { viewModel.setPassword(it)},
