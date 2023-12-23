@@ -1,4 +1,4 @@
-package com.example.moulamanagerclient.data.repositories
+package com.example.moulamanagerclient.data.network
 
 import com.example.moulamanagerclient.data.model.Pagination
 import com.example.moulamanagerclient.data.model.auth.LoginRequest
@@ -10,9 +10,9 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface ApiService {
-    @POST(ApiEndpoints.LOGIN)
-    suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
+	@POST(ApiEndpoints.LOGIN)
+	suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 
-    @GET(ApiEndpoints.PRODUCTS)
-    suspend fun getProducts(): Response<Pagination<Product>>
+	@GET(ApiEndpoints.PRODUCTS)
+	suspend fun getProducts(): Response<Pagination<Product>>
 }
