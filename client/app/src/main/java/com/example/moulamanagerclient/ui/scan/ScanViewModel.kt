@@ -1,4 +1,4 @@
-package com.example.moulamanagerclient.ui.home
+package com.example.moulamanagerclient.ui.scan
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

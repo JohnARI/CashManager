@@ -1,3 +1,5 @@
+package com.example.moulamanagerclient.ui.checkout
+
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
