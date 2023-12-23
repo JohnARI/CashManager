@@ -2,7 +2,6 @@ package com.example.moulamanagerclient.ui.auth.login
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moulamanagerclient.data.model.auth.LoginRequest
@@ -47,6 +46,12 @@ constructor(
 	}
 
 	fun performLogin() {
+
+		if (_inputUsername.value.isBlank() || _inputPassword.value.isBlank()) {
+			_errorMessage.value = "Username or password cannot be empty"
+			return
+		}
+
 		val request = LoginRequest(
 			password = _inputPassword.value,
 			username = _inputUsername.value
