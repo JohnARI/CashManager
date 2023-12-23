@@ -14,6 +14,7 @@ import com.example.moulamanagerclient.ui.navbar.NavigationHost
 import com.example.moulamanagerclient.ui.theme.MoulamanagerclientTheme
 import com.example.moulamanagerclient.utils.SharedPreferences
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val token = SharedPreferences.getKey(context=this, key="Authorization")
