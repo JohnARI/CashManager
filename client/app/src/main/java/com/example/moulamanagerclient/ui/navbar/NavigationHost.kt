@@ -1,6 +1,6 @@
 package com.example.moulamanagerclient.ui.navbar
 
-import ScanComponent
+//import com.example.moulamanagerclient.ui.cartItem.CartItemActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -11,25 +11,25 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.moulamanagerclient.shared.AppRoutes
-import com.example.moulamanagerclient.ui.cart.CartComponent
-//import com.example.moulamanagerclient.ui.cartItem.CartItemActivity
-import com.example.moulamanagerclient.ui.login.LoginActivity
+import com.example.moulamanagerclient.ui.auth.login.LoginActivity
 import com.example.moulamanagerclient.ui.product.ProductComponent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavigationHost(navigationController: NavHostController) {
-    Scaffold(
-        bottomBar = { NavbarComponent(navigationController) }
-    ) { paddingValues ->
-        Column(Modifier.padding(paddingValues)) {
-            NavHost(navController = navigationController, startDestination = AppRoutes.cart.path) {
-                composable(AppRoutes.cart.path) { LoginActivity() }
-//                composable(AppRoutes.scan.path) { CartItemActivity() }
-                composable(AppRoutes.checkout.path) { ProductComponent() }
-                composable(AppRoutes.logout.path) { ProductComponent() }
-
-            }
-        }
-    }
+	Scaffold(
+		bottomBar = { NavbarComponent(navigationController) }
+	) { paddingValues ->
+		Column(Modifier.padding(paddingValues)) {
+			NavHost(
+				navController = navigationController,
+				startDestination = AppRoutes.CART.path
+			) {
+				composable(AppRoutes.CART.path) { LoginActivity() }
+				composable(AppRoutes.SCAN.path) { ProductComponent() }
+				composable(AppRoutes.CHECKOUT.path) { ProductComponent() }
+				composable(AppRoutes.LOGOUT.path) { ProductComponent() }
+			}
+		}
+	}
 }

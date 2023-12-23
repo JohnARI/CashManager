@@ -11,29 +11,29 @@ import com.example.moulamanagerclient.shared.AppRoutes
 class NavbarViewModel: ViewModel() {
     val items = listOf(
         NavbarItem(
-            title = AppRoutes.cart.title,
-            route = AppRoutes.cart.path,
+            title = AppRoutes.CART.title,
+            route = AppRoutes.CART.path,
             selectedIcon = Icons.Filled.ShoppingCart,
             unselectedIcon = Icons.Outlined.ShoppingCart
         ),
 
         NavbarItem(
-            title = AppRoutes.scan.title,
-            route = AppRoutes.scan.path,
+            title = AppRoutes.SCAN.title,
+            route = AppRoutes.SCAN.path,
             selectedIcon = Icons.Filled.Scanner,
             unselectedIcon = Icons.Outlined.Scanner
         ),
 
         NavbarItem(
-            title = AppRoutes.checkout.title,
-            route = AppRoutes.checkout.path,
+            title = AppRoutes.CHECKOUT.title,
+            route = AppRoutes.CHECKOUT.path,
             selectedIcon = Icons.Filled.CreditCard,
             unselectedIcon = Icons.Outlined.CreditCard
         ),
 
         NavbarItem(
-            title = AppRoutes.logout.title,
-            route = AppRoutes.logout.path,
+            title = AppRoutes.LOGOUT.title,
+            route = AppRoutes.LOGOUT.path,
             selectedIcon = Icons.Filled.Logout,
             unselectedIcon = Icons.Outlined.Logout
         ),
