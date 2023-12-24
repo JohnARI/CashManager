@@ -32,8 +32,8 @@ fun LoginComponent(
 	inputPassword: String,
 	onPasswordChange: (String) -> Unit,
 	onLoginClick: () -> Unit,
-	loginResult: ApiResult<LoginResponse?>,
-	errorMessage: String
+	errorMessage: String,
+	isLoading: Boolean,
 ) {
 	Column(
 		horizontalAlignment = Alignment.Start,
@@ -81,9 +81,9 @@ fun LoginComponent(
 			)
 		}
 		LoginButton(
-			loginResult = loginResult,
 			onLoginClick = onLoginClick,
-			label = "Sign in"
+			label = "Sign in",
+			isLoading = isLoading
 		)
 	}
 }

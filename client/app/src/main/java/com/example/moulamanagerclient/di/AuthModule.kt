@@ -1,13 +1,12 @@
 package com.example.moulamanagerclient.di
 
-import android.content.Context
 import com.example.moulamanagerclient.data.network.ApiService
 import com.example.moulamanagerclient.data.network.AuthInterceptor
 import com.example.moulamanagerclient.data.repositories.auth.AuthRepository
+import com.example.moulamanagerclient.utils.PreferenceManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -17,8 +16,8 @@ object AuthModule {
 
 	@Provides
 	@Singleton
-	fun provideAuthInterceptor(@ApplicationContext appContext: Context): AuthInterceptor {
-		return AuthInterceptor(appContext)
+	fun provideAuthInterceptor(preferences: PreferenceManager): AuthInterceptor {
+		return AuthInterceptor(preferences)
 	}
 
 	@Provides
