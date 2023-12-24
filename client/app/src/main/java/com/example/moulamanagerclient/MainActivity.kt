@@ -13,26 +13,33 @@ import com.example.moulamanagerclient.ui.navbar.NavigationHost
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.moulamanagerclient.data.repositories.ApiHeader
+import com.example.moulamanagerclient.data.network.AuthInterceptor
+import com.example.moulamanagerclient.ui.auth.login.LoginActivity
 import com.example.moulamanagerclient.ui.navbar.NavigationHost
 import com.example.moulamanagerclient.ui.theme.MoulamanagerclientTheme
-import com.example.moulamanagerclient.utils.SharedPreferences
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        val token = SharedPreferences.getKey(context=this, key="Authorization")
-        token?.let{
-            ApiHeader.setAccessToken(it)
-        }
+	@Inject
+	lateinit var authInterceptor: AuthInterceptor
 
-        super.onCreate(savedInstanceState)
-        setContent {
-            MoulamanagerclientTheme {
-                NavigationHost(rememberNavController())
-            }
-        }
-    }
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		setContent {
+			MoulamanagerclientTheme {
+				// A surface container using the 'background' color from the theme
+				Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+					if (authInterceptor.isLoggedIn()) {
+						NavigationHost(navigationController = rememberNavController())
+					} else {
+						LoginActivity()
+					}
+				}
+			}
+		}
+	}
 }

@@ -1,4 +1,4 @@
-package com.example.moulamanagerclient.data.repositories
+package com.example.moulamanagerclient.data.network
 
 import com.example.moulamanagerclient.data.model.Pagination
 import com.example.moulamanagerclient.data.model.auth.LoginRequest
