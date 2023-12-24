@@ -1,26 +1,45 @@
 package com.example.moulamanagerclient.data.network
 
+import android.content.Context
+import com.auth0.android.jwt.JWT
+import com.example.moulamanagerclient.utils.PreferenceManager
 import okhttp3.Interceptor
 import okhttp3.Response
-import android.content.Context
-import com.example.moulamanagerclient.utils.SharedPreferences
+import java.util.*
+import javax.inject.Inject
 
-class AuthInterceptor(private val context: Context) : Interceptor {
+class AuthInterceptor
+@Inject
+constructor(
+	private val preferenceManager: PreferenceManager
+) : Interceptor {
 	override fun intercept(chain: Interceptor.Chain): Response {
 		val originalRequest = chain.request()
 
-		// We don't want to add the token to the login and register requests
-		if (originalRequest.url.encodedPath.contains("login") ||
-			originalRequest.url.encodedPath.contains("register")) {
+		val token = preferenceManager.getValue("token")
+
+		if (token == null || !isTokenValid(token)) {
 			return chain.proceed(originalRequest)
 		}
-
-		val token = SharedPreferences.getKey(context, "token")
 
 		val requestBuilder = originalRequest.newBuilder()
 			.header("Authorization", "Bearer $token")
 			.method(originalRequest.method, originalRequest.body)
 
 		return chain.proceed(requestBuilder.build())
+	}
+
+	fun isLoggedIn(context: Context): Boolean {
+		val token = preferenceManager.getValue("token")
+		return token != null && isTokenValid(token)
+	}
+
+
+	private fun isTokenValid(token: String): Boolean {
+		val decodedJWT = JWT(token)
+		val expirationDate = decodedJWT.expiresAt
+		val currentDate = Date()
+
+		return expirationDate?.after(currentDate) ?: false
 	}
 }
