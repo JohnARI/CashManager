@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import com.example.moulamanagerclient.shared.AppRoutes
 import com.example.moulamanagerclient.ui.auth.login.LoginActivity
 import com.example.moulamanagerclient.ui.product.ProductComponent
+import com.example.moulamanagerclient.ui.scan.ScanComponent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,7 +27,7 @@ fun NavigationHost(navigationController: NavHostController) {
 				startDestination = AppRoutes.CART.path
 			) {
 				composable(AppRoutes.CART.path) { LoginActivity() }
-				composable(AppRoutes.SCAN.path) { ProductComponent() }
+				composable(AppRoutes.SCAN.path) { ScanComponent() }
 				composable(AppRoutes.CHECKOUT.path) { ProductComponent() }
 				composable(AppRoutes.LOGOUT.path) { ProductComponent() }
 			}
