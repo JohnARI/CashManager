@@ -17,11 +17,19 @@ import kotlinx.coroutines.withContext
 
 class ScanViewModel: ViewModel() {
     private val _productResult: MutableStateFlow<ProductResponse?> = MutableStateFlow(null)
+    private val _createProductResult: MutableStateFlow<ProductResponse?> = MutableStateFlow(null)
     private val _ean: MutableStateFlow<String> = MutableStateFlow("")
     private val _amount: MutableStateFlow<String> = MutableStateFlow("1")
+    private val _crateProductName: MutableStateFlow<String> = MutableStateFlow("")
+    private val _crateProductPrice: MutableStateFlow<String> = MutableStateFlow("")
+    private val _crateProductDescription: MutableStateFlow<String> = MutableStateFlow("")
     val ean: StateFlow<String> = _ean
     val amount: StateFlow<String> = _amount
     val productResult: StateFlow<ProductResponse?> = _productResult
+    val createProductResult: StateFlow<ProductResponse?> = _createProductResult
+    val createProductName: StateFlow<String> = _crateProductName
+    val createProductPrice: StateFlow<String> = _crateProductPrice
+    val createProductDescription: StateFlow<String> = _crateProductDescription
 
     fun setEan(ean: String) {
         _ean.value = ean
@@ -29,6 +37,18 @@ class ScanViewModel: ViewModel() {
 
     fun setAmount(amount: String) {
         _amount.value = amount
+    }
+
+    fun setCreateProductName(name: String) {
+        _crateProductName.value = name
+    }
+
+    fun setCreateProductPrice(price: String) {
+        _crateProductPrice.value = price
+    }
+
+    fun setCreateProductDescription(description: String) {
+        _crateProductDescription.value = description
     }
 
     fun getAmount(): String {
@@ -49,6 +69,19 @@ class ScanViewModel: ViewModel() {
             withContext(Dispatchers.Main) {
                 _productResult.value = response
                 Log.d("Product", response.toString())
+            }
+        }
+    }
+
+    fun createProduct(barcode: String, name: String, price: Double, description: String) {
+        val productRepo = ProductRepository()
+
+        viewModelScope.launch {
+            val response = productRepo.createProduct(barcode, name, price, description)
+
+            withContext(Dispatchers.Main) {
+                _createProductResult.value = response
+                Log.d("Create Product", response.toString())
             }
         }
     }

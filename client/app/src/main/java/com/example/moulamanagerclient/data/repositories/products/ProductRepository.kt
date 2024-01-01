@@ -2,6 +2,7 @@ package com.example.moulamanagerclient.data.repositories.products
 
 import com.example.moulamanagerclient.data.model.auth.LoginRequest
 import com.example.moulamanagerclient.data.model.auth.LoginResponse
+import com.example.moulamanagerclient.data.model.product.CreateProductRequest
 import com.example.moulamanagerclient.data.model.product.ProductResponse
 import com.example.moulamanagerclient.utils.Retrofit
 import kotlinx.coroutines.CoroutineScope
@@ -13,6 +14,33 @@ class ProductRepository {
         try {
             val response = CoroutineScope(Dispatchers.IO).async {
                 Retrofit.apiService.getProducts(barcode).body()
+            }.await()
+
+            return response?.let {
+                ProductResponse(
+                    id = it.id,
+                    name = it.name,
+                    price = it.price,
+                    barcode = it.barcode,
+                    description = it.description
+                )
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    suspend fun createProduct(barcode: String, name: String, price: Double, description: String): ProductResponse? {
+        try {
+            val product = CreateProductRequest(
+                barcode = barcode,
+                name = name,
+                price = price,
+                description = description
+            )
+
+            val response = CoroutineScope(Dispatchers.IO).async {
+                Retrofit.apiService.createProduct(product).body()
             }.await()
 
             return response?.let {

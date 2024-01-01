@@ -63,6 +63,10 @@ fun Scan(scanViewModel: ScanViewModel) {
     val currentEan = scanViewModel.ean.collectAsState()
     val currentAmount = scanViewModel.amount.collectAsState()
     val productResult = scanViewModel.productResult.collectAsState()
+    val createProductResult = scanViewModel.createProductResult.collectAsState()
+    val createProductDescription = scanViewModel.createProductDescription.collectAsState()
+    val createProductName = scanViewModel.createProductName.collectAsState()
+    val createProductPrice = scanViewModel.createProductPrice.collectAsState()
 
     if (currentEan.value.isNotEmpty()) {
         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -102,7 +106,116 @@ fun Scan(scanViewModel: ScanViewModel) {
         }
     )
 
-    if (currentEan.value.isNotEmpty()) {
+    if (currentEan.value.isEmpty()) return
+
+    Log.d("Product IS NULL", productResult.value.toString())
+
+    if (productResult.value == null) {
+        ModalBottomSheet(
+            modifier = Modifier.fillMaxHeight(),
+            onDismissRequest = { scanViewModel.reset() },
+            sheetState = modalBottomSheetState,
+            dragHandle = { BottomSheetDefaults.DragHandle() },
+        ) {
+            Text(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 32.dp)
+                    .align(Alignment.CenterHorizontally),
+                text = "Create Product",
+                fontSize = 30.sp
+            )
+
+            Text(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                text = "Product characteristics",
+                fontSize = 22.sp
+            )
+
+            HorizontalDivider(
+                modifier = Modifier.padding(16.dp),
+                thickness = 1.dp
+            )
+
+            OutlinedTextField(
+                value = createProductName.value,
+                onValueChange = { scanViewModel.setCreateProductName(it) },
+                singleLine = true,
+            )
+
+            OutlinedTextField(
+                value = createProductPrice.value,
+                onValueChange = { scanViewModel.setCreateProductPrice(it) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.width(50.dp),
+                singleLine = true,
+            )
+
+            Text(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 4.dp),
+                text = "Product description",
+                fontSize = 22.sp
+            )
+
+            HorizontalDivider(
+                modifier = Modifier.padding(16.dp),
+                thickness = 1.dp
+            )
+
+            OutlinedTextField(
+                value = createProductDescription.value,
+                onValueChange = { scanViewModel.setCreateProductDescription(it) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Row(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 48.dp)
+                    .fillMaxWidth().fillMaxHeight(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                OutlinedButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            modalBottomSheetState.hide()
+                            scanViewModel.reset()
+                        }
+                    },
+                    modifier = Modifier.width(100.dp),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Cancel",
+                        fontSize = 16.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            modalBottomSheetState.hide()
+                            scanViewModel.createProduct(
+                                currentEan.value,
+                                createProductName.value,
+                                createProductPrice.value.toDoubleOrNull() ?: 0.0,
+                                createProductDescription.value
+                            )
+                            scanViewModel.reset()
+                        }
+                    },
+                    modifier = Modifier.width(100.dp),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Create",
+                        fontSize = 16.sp
+                    )
+                }
+            }
+        }
+    }
+
+    if (productResult.value != null) {
         ModalBottomSheet(
             modifier = Modifier.fillMaxHeight(),
             onDismissRequest = { scanViewModel.reset() },

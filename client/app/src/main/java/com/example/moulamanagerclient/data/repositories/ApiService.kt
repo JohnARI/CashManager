@@ -3,6 +3,7 @@ package com.example.moulamanagerclient.data.repositories
 import com.example.moulamanagerclient.data.model.Pagination
 import com.example.moulamanagerclient.data.model.auth.LoginRequest
 import com.example.moulamanagerclient.data.model.auth.LoginResponse
+import com.example.moulamanagerclient.data.model.product.CreateProductRequest
 import com.example.moulamanagerclient.data.model.product.ProductResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -14,6 +15,10 @@ interface ApiService {
     @GET(ApiEndpoints.BARCODE)
     suspend fun getProducts(@Path("barcode") barcode: String): Response<ProductResponse>
 
+    @POST(ApiEndpoints.PRODUCTS)
+    suspend fun createProduct(@Body product: CreateProductRequest): Response<ProductResponse>
+
     @POST(ApiEndpoints.LOGIN)
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
+
 }
