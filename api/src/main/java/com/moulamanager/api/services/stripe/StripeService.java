@@ -1,13 +1,16 @@
 package com.moulamanager.api.services.stripe;
 
 import com.moulamanager.api.dto.cart.result.CartResultDTO;
+import com.moulamanager.api.dto.stripe.result.PaymentIntentResultDTO;
 import com.moulamanager.api.dto.user.result.UserResultDTO;
 import com.moulamanager.api.services.cart.CartService;
 import com.moulamanager.api.services.cartItem.CartItemService;
 import com.moulamanager.api.services.user.UserService;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
+import com.stripe.model.EphemeralKey;
 import com.stripe.model.PaymentIntent;
+import com.stripe.param.EphemeralKeyCreateParams;
 import com.stripe.param.PaymentIntentCreateParams;
 
 import jakarta.annotation.PostConstruct;
@@ -38,11 +41,22 @@ public class StripeService {
         Stripe.apiKey = stripeSecretKey;
     }
 
-    public PaymentIntent createPaymentIntent(long userId, String currency) throws StripeException {
+    public PaymentIntentResultDTO createPaymentIntent(long userId, String currency) throws StripeException {
         UserResultDTO user = getUser(userId);
         BigDecimal amountInCents = calculateAmountInCents(userId);
         PaymentIntentCreateParams params = createPaymentIntentParams(user, amountInCents, currency);
-        return PaymentIntent.create(params);
+        PaymentIntent paymentIntent = PaymentIntent.create(params);
+        EphemeralKey ephemeralKey = createEphemeralKey(paymentIntent.getCustomer());
+        return PaymentIntentResultDTO.fromPaymentIntent(paymentIntent, ephemeralKey.getSecret());
+    }
+
+    private EphemeralKey createEphemeralKey(String customerId) throws StripeException {
+        EphemeralKeyCreateParams params = EphemeralKeyCreateParams.builder()
+                .setCustomer(customerId)
+                .setStripeVersion("2023-10-16")
+                .build();
+
+        return EphemeralKey.create(params);
     }
 
     private UserResultDTO getUser(long userId) {
