@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,31 +27,32 @@ fun CartItemRow(
     cartItem: CartItem,
     isOdd: Boolean,
     onValueChange: (CartItem) -> Unit,
-    inputValue: String
 ) {
     Surface(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .height(75.dp),
         color = when(isOdd) {
             true -> Colors.BLACK_1
-            false -> Colors.BLACK_3
+            false -> Colors.BLACK_2
         }
     ) {
         Row (
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .wrapContentSize()
-        ) {
-            InputField(cartItem, inputValue,  onValueChange)
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentSize(Alignment.Center)
                 .padding(horizontal = 20.dp)
+                .fillMaxSize()
         ) {
-            Text("test", color = Colors.WHITE)
+            Row (
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(15.dp)
+            ){
+                InputField(cartItem, cartItem.quantity.toString(),  onValueChange)
+                Text("x", color = Colors.WHITE)
+                Text(cartItem.product.name, color = Colors.WHITE)
+            }
+            Text(cartItem.product.price.toString() + " €", color = Colors.WHITE)
         }
     }
 }
@@ -68,8 +70,12 @@ fun InputField(
             focusedTextColor = colorResource(id = R.color.white),
             unfocusedTextColor = colorResource(id = R.color.white),
         ),
+        placeholder = {
+            Text(value, color = Colors.WHITE)
+        },
         modifier = Modifier
-            .width(20.dp)
+            .width(70.dp)
+            .height(60.dp)
             .padding(bottom = 10.dp),
         value = value,
         onValueChange = {

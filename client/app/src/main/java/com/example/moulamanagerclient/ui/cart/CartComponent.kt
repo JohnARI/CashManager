@@ -1,6 +1,8 @@
 package com.example.moulamanagerclient.ui.cart
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -16,32 +18,15 @@ import java.util.*
 @Composable
 fun CartComponent(
     setUpdateQuantity: (CartItem) -> Unit,
+    cartItemList: List<CartItem>?
 ) {
-    Column{
-        CartItemRow(
-            CartItem(
-               id = 1,
-                product = ProductResponse(
-                    id= 2,
-                    name = "Vittel2",
-                    price = 122.43,
-                    description = "Dans 20-30 ans y'en aura plus",
-                    barcode = "3048431001911"
-                ),
-                quantity = 0,
-                cart = Cart(
-                    id= 1,
-                    userId= 1,
-                    createdAt=
-                            "2024-01-07T16:58:12.205+00:00",
-
-                    checkedOut= false
+    LazyColumn{
+        itemsIndexed(cartItemList ?: emptyList()) { index, cartItem ->
+                CartItemRow(
+                    cartItem = cartItem,
+                    isOdd = if (index % 2 == 0) true else false,
+                    onValueChange = setUpdateQuantity
                 )
-            ),
-            true,
-            setUpdateQuantity,
-            "3")
-        Text("Cart")
-        Text("Cart")
+        }
     }
 }
