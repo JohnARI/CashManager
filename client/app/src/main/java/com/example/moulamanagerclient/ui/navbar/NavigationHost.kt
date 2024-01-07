@@ -13,6 +13,7 @@ import com.example.moulamanagerclient.data.network.AuthInterceptor
 import com.example.moulamanagerclient.shared.AppRoutes
 import com.example.moulamanagerclient.ui.auth.login.LoginActivity
 import com.example.moulamanagerclient.ui.auth.register.RegisterActivity
+import com.example.moulamanagerclient.ui.cart.CartActivity
 import com.example.moulamanagerclient.ui.product.ProductActivity
 import com.example.moulamanagerclient.ui.scan.ScanComponent
 
@@ -41,7 +42,7 @@ fun NavigationHost(navigationController: NavHostController, authInterceptor: Aut
 			) {
 				composable(AppRoutes.LOGIN.path) { LoginActivity(navigationController) }
 				composable(AppRoutes.REGISTER.path) { RegisterActivity(navigationController) }
-				composable(AppRoutes.CART.path) { ProductActivity() }
+				composable(AppRoutes.CART.path) { CartActivity() }
 				composable(AppRoutes.SCAN.path) { ScanComponent() }
 				composable(AppRoutes.PRODUCT.path) { ProductActivity() }
 				composable(AppRoutes.LOGOUT.path) { ProductActivity() }

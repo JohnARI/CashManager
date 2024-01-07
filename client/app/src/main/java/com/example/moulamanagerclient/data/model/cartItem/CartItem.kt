@@ -16,3 +16,11 @@ data class CartItem(
 	@Json(name = "quantity")
 	val quantity: Int
 )
+
+
+
+@JsonClass(generateAdapter = true)
+data class UpdateCartItemRequest(
+	@Json(name = "quantity")
+	val quantity: Int,
+)
