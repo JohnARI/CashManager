@@ -1,59 +1,66 @@
 package com.example.moulamanagerclient.data.repositories.products
 
-import com.example.moulamanagerclient.data.model.auth.LoginRequest
-import com.example.moulamanagerclient.data.model.auth.LoginResponse
-import com.example.moulamanagerclient.data.model.product.CreateProductRequest
+import com.example.moulamanagerclient.data.model.Pagination
 import com.example.moulamanagerclient.data.model.product.ProductResponse
-import com.example.moulamanagerclient.utils.Retrofit
-import kotlinx.coroutines.CoroutineScope
+import com.example.moulamanagerclient.data.network.ApiHelper.handleApiResponse
+import com.example.moulamanagerclient.data.network.ApiResult
+import com.example.moulamanagerclient.data.network.ApiService
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class ProductRepository {
-    suspend fun getProductByBarcode(barcode: String): ProductResponse? {
-        try {
-            val response = CoroutineScope(Dispatchers.IO).async {
-                Retrofit.apiService.getProducts(barcode).body()
-            }.await()
+class ProductRepository
+@Inject
+constructor(
+	private val apiService: ApiService
+) {
+	private val productCache = mutableMapOf<String, Pagination<ProductResponse>>()
 
-            return response?.let {
-                ProductResponse(
-                    id = it.id,
-                    name = it.name,
-                    price = it.price,
-                    barcode = it.barcode,
-                    description = it.description
-                )
-            }
-        } catch (e: Exception) {
-            throw e
-        }
-    }
+	suspend fun getProducts(page: Int, size: Int): ApiResult<Pagination<ProductResponse>> {
+		return withContext(Dispatchers.IO) {
+			val cacheKey = "products_page_$page"
+			val cachedProduct = productCache[cacheKey]
+			if (cachedProduct != null) {
+				return@withContext ApiResult.Success(cachedProduct)
+			}
 
-    suspend fun createProduct(barcode: String, name: String, price: Double, description: String): ProductResponse? {
-        try {
-            val product = CreateProductRequest(
-                barcode = barcode,
-                name = name,
-                price = price,
-                description = description
-            )
+			val result = handleApiResponse(
+				request = { apiService.getProducts(page, size) }
+			)
 
-            val response = CoroutineScope(Dispatchers.IO).async {
-                Retrofit.apiService.createProduct(product).body()
-            }.await()
+			if (result is ApiResult.Success && result.data != null) {
+				productCache[cacheKey] = result.data
+			}
 
-            return response?.let {
-                ProductResponse(
-                    id = it.id,
-                    name = it.name,
-                    price = it.price,
-                    barcode = it.barcode,
-                    description = it.description
-                )
-            }
-        } catch (e: Exception) {
-            throw e
-        }
-    }
+			result
+		}
+	}
+
+	suspend fun searchProductsByName(name: String, page: Int, size: Int): ApiResult<Pagination<ProductResponse>> {
+		return withContext(Dispatchers.IO) {
+			val cacheKey = "search_${name}_page_$page"
+			val cachedProduct = productCache[cacheKey]
+			if (cachedProduct != null) {
+				return@withContext ApiResult.Success(cachedProduct)
+			}
+
+			val result = handleApiResponse(
+				request = { apiService.searchProductsByName(name, page, size) }
+			)
+
+			if (result is ApiResult.Success && result.data != null) {
+				productCache[cacheKey] = result.data
+			}
+
+			result
+		}
+	}
+
+	suspend fun getProductByBarcode(barcode: String): ApiResult<ProductResponse> {
+		return withContext(Dispatchers.IO) {
+			handleApiResponse(
+				request = { apiService.getProductsByBarcode(barcode) }
+			)
+		}
+	}
 }
