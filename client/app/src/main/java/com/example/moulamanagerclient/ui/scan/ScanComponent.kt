@@ -262,7 +262,7 @@ fun Scan(scanViewModel: ScanViewModel) {
 
                 Text(
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                    text = "Name: ${productResult.value?.price ?: ""}",
+                    text = "Price: $${productResult.value?.price ?: ""}",
                     fontSize = 16.sp
                 )
 
@@ -279,7 +279,7 @@ fun Scan(scanViewModel: ScanViewModel) {
 
                 Text(
                     modifier = Modifier.padding(16.dp),
-                    text = "Name: ${productResult.value?.description ?: ""}",
+                    text = productResult.value?.description ?: "",
                     fontSize = 16.sp,
                     lineHeight = 30.sp,
                 )
@@ -309,7 +309,7 @@ fun Scan(scanViewModel: ScanViewModel) {
 
                     Text(
                         modifier = Modifier.padding(start = 16.dp),
-                        text = "${productResult.value?.price ?: ""}",
+                        text = "$${productResult.value?.price ?: ""}",
                         fontSize = 16.sp
                     )
                 }
@@ -365,6 +365,10 @@ fun Scan(scanViewModel: ScanViewModel) {
                     Button(
                         onClick = {
                             coroutineScope.launch {
+                                scanViewModel.addProductToCart(
+                                    barcode = currentEan.value,
+                                    quantity = currentAmount.value
+                                )
                                 modalBottomSheetState.hide()
                                 scanViewModel.reset()
                             }

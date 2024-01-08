@@ -3,9 +3,11 @@ package com.example.moulamanagerclient.ui.scan
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.moulamanagerclient.data.model.cartItem.AddProductToCartRequest
 import com.example.moulamanagerclient.data.model.product.CreateProductRequest
 import com.example.moulamanagerclient.data.model.product.ProductResponse
 import com.example.moulamanagerclient.data.network.ApiResult
+import com.example.moulamanagerclient.data.repositories.cartItem.CartItemRepository
 import com.example.moulamanagerclient.data.repositories.products.ProductRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ScanViewModel @Inject constructor(
-    private val productRepository: ProductRepository
+    private val productRepository: ProductRepository,
+    private val cartItemRepository: CartItemRepository
 ) : ViewModel() {
 
     private val _productResult: MutableStateFlow<ProductResponse?> = MutableStateFlow(null)
@@ -112,16 +115,16 @@ class ScanViewModel @Inject constructor(
             }
         }
     }
-//	fun addProductToCart(barcode: String, quantity: String) {
-//		viewModelScope.launch {
-//			Log.d("EAN", barcode)
-//			val request = AddProductToCartRequest(quantity = quantity.toInt(), barcode = barcode)
-//			val response = productRepository.createProduct(request)
-//
-//			withContext(Dispatchers.Main) {
-//				_createProductResult.value = response
-//			}
-//		}
-//	}
+
+    fun addProductToCart(barcode: String, quantity: String) {
+        viewModelScope.launch {
+            val request = AddProductToCartRequest(quantity = quantity.toInt())
+            val response = cartItemRepository.addProduct(request, barcode)
+
+//            withContext(Dispatchers.Main) {
+//                _createProductResult.value = response
+//            }
+        }
+    }
 
 }
