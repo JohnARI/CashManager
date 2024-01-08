@@ -13,7 +13,7 @@ object ApiHelper {
 		return try {
 			val response = request()
 			if (response.isSuccessful) {
-				ApiResult.Success(response.body()!!)
+				ApiResult.Success(response.body())
 			} else {
 				val errorBody = response.errorBody()?.string()
 				val message = errorBody?.let {

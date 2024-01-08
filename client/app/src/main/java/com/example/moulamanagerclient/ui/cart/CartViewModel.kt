@@ -27,25 +27,57 @@ constructor(
 	private val cartItemRepository: CartItemRepository,
 ) : ViewModel() {
 	private val _itemUpdateResult: MutableStateFlow<ApiResult<CartItem?>> = MutableStateFlow(ApiResult.Initial)
-	private val _itemListResult: MutableStateFlow<ApiResult<Pagination<CartItem>?>?> = MutableStateFlow(null)
 	private val _itemList: MutableStateFlow<List<CartItem>?> = MutableStateFlow(null)
 	private val _updatedItem: MutableStateFlow<CartItem?> = MutableStateFlow(null)
-	private val _itemIdToUpdate: MutableStateFlow<Int> = MutableStateFlow(0)
 	private val _errorMessage: MutableStateFlow<String> = MutableStateFlow("")
 	private val _isLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-
 	val itemList: StateFlow<List<CartItem>?> = _itemList
-	val itemListResult: StateFlow<ApiResult<Pagination<CartItem>?>?> = _itemListResult
-	val updatedItem: StateFlow<CartItem?> = _updatedItem
-	val itemUpdateResult: StateFlow<ApiResult<CartItem?>> = _itemUpdateResult
 	val errorMessage: StateFlow<String> = _errorMessage
 	val isLoading: StateFlow<Boolean> = _isLoading
 
 	fun onInputChange(updatedItem: CartItem) {
 		_updatedItem.value = updatedItem
+		if( updatedItem.quantity != 0 ) return updateItemList()
+		deleteItemList()
 	}
 
+	fun getTotal(): String {
+		var total = 0.0
+		_itemList.value?.forEach{element ->
+			total += (element.product.price * element.quantity)
+		}
+		return String.format("%.2f", total)
+	}
+
+
+	private fun deleteItemList() {
+		viewModelScope.launch {
+			_isLoading.value = true
+			_errorMessage.value = ""
+
+			val result = cartItemRepository.deleteCartItem(
+				_updatedItem.value!!.product.id
+			)
+
+			when (result) {
+				is ApiResult.Success -> {
+				   val itemToRemoveId = _updatedItem.value?.id
+				   _itemList.value = _itemList.value?.filterNot { it.id == itemToRemoveId }
+				}
+
+				is ApiResult.Error -> {
+					_errorMessage.value = result.errorInfo.message
+				}
+
+				ApiResult.Initial -> {
+					_errorMessage.value = ""
+				}
+			}
+
+			_isLoading.value = false
+		}
+	}
 	fun getItemList() {
 		viewModelScope.launch {
 			_isLoading.value = true
@@ -72,7 +104,8 @@ constructor(
 			_isLoading.value = false
 		}
 	}
-	fun updateItemList() {
+
+	private fun updateItemList() {
 		val body = _updatedItem.value?.let {
 			UpdateCartItemRequest(
 				quantity = it.quantity
@@ -85,12 +118,21 @@ constructor(
 
 			_itemUpdateResult.value = cartItemRepository.updateCartItem(
 				body,
-				_itemIdToUpdate.value
+				_updatedItem.value!!.product.id
 			)
 
 			when (val result = _itemUpdateResult.value) {
 				is ApiResult.Success -> {
 
+					_itemList.value?.let { currentList ->
+						_itemList.value = currentList.mapIndexed { index, element ->
+							if (element.id == _updatedItem.value?.id) {
+								_updatedItem.value ?: element
+							} else {
+								element
+							}
+						}
+					}
 				}
 
 				is ApiResult.Error -> {

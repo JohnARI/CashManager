@@ -21,6 +21,13 @@ class CartItemRepository (
             )
         }
     }
+    suspend fun deleteCartItem(itemId: Int): ApiResult<Any> {
+        return withContext(Dispatchers.IO) {
+            ApiHelper.handleApiResponse(
+                request = { apiService.deleteCartItem(itemId) }
+            )
+        }
+    }
     suspend fun updateCartItem(request: UpdateCartItemRequest, itemId: Int): ApiResult<CartItem?> {
         return withContext(Dispatchers.IO) {
             ApiHelper.handleApiResponse(

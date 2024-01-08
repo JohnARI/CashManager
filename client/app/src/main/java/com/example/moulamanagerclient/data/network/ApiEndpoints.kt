@@ -10,4 +10,5 @@ object ApiEndpoints {
     const val CREATE_PAYMENT_INTENT = "create-payment-intent"
     const val GET_CART_ITEM = "carts/items/me"
     const val UPDATE_CART_ITEM = "/carts/items/{productId}"
+    const val DELETE_CART_ITEM = "/carts/items/{productId}"
 }

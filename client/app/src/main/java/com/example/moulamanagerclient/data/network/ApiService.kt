@@ -25,6 +25,9 @@ interface ApiService {
 	@PATCH(ApiEndpoints.UPDATE_CART_ITEM)
 	suspend fun updateCartItem(@Path("productId") productId: Int, @Body request: UpdateCartItemRequest): Response<CartItem>
 
+	@DELETE(ApiEndpoints.DELETE_CART_ITEM)
+	suspend fun deleteCartItem(@Path("productId") productId: Int): Response<Any>
+
 	@GET(ApiEndpoints.PRODUCTS_BY_NAME)
 	suspend fun searchProductsByName(
 		@Path("name") name: String,
