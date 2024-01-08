@@ -4,13 +4,16 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class CreateProductRequest(
-    @Json(name = "barcode")
-    val barcode: String,
+data class CreateProductRequest (
     @Json(name = "name")
     val name: String,
-    @Json(name = "price")
-    val price: Double,
+
     @Json(name = "description")
-    val description: String
+    val description: String,
+
+    @Json(name = "price")
+    val price: Float,
+
+    @Json(name = "barcode")
+    val barcode: String,
 )

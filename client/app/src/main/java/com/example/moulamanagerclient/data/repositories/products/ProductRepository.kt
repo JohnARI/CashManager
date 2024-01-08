@@ -1,6 +1,7 @@
 package com.example.moulamanagerclient.data.repositories.products
 
 import com.example.moulamanagerclient.data.model.Pagination
+import com.example.moulamanagerclient.data.model.product.CreateProductRequest
 import com.example.moulamanagerclient.data.model.product.ProductResponse
 import com.example.moulamanagerclient.data.network.ApiHelper.handleApiResponse
 import com.example.moulamanagerclient.data.network.ApiResult
@@ -60,6 +61,14 @@ constructor(
 		return withContext(Dispatchers.IO) {
 			handleApiResponse(
 				request = { apiService.getProductsByBarcode(barcode) }
+			)
+		}
+	}
+
+	suspend fun createProduct(product: CreateProductRequest): ApiResult<ProductResponse> {
+		return withContext(Dispatchers.IO) {
+			handleApiResponse(
+				request = { apiService.createProduct(product) }
 			)
 		}
 	}

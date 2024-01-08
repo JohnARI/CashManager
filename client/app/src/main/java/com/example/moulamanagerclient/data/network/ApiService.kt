@@ -5,6 +5,7 @@ import com.example.moulamanagerclient.data.model.auth.LoginRequest
 import com.example.moulamanagerclient.data.model.auth.LoginResponse
 import com.example.moulamanagerclient.data.model.auth.RegisterRequest
 import com.example.moulamanagerclient.data.model.payment.PaymentIntentResponse
+import com.example.moulamanagerclient.data.model.product.CreateProductRequest
 import com.example.moulamanagerclient.data.model.product.ProductResponse
 import com.stripe.android.model.PaymentIntent
 import retrofit2.Response
@@ -16,6 +17,9 @@ interface ApiService {
 
 	@GET(ApiEndpoints.PRODUCTS)
 	suspend fun getProducts(@Query("page") page: Int, @Query("size") size: Int): Response<Pagination<ProductResponse>>
+
+	@POST(ApiEndpoints.PRODUCTS)
+	suspend fun createProduct(@Body request: CreateProductRequest): Response<ProductResponse>
 
 	@GET(ApiEndpoints.PRODUCTS_BY_NAME)
 	suspend fun searchProductsByName(
