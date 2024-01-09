@@ -4,6 +4,7 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -23,6 +24,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.moulamanagerclient.ui.scan.BarcodeAnalyzer
 import com.example.moulamanagerclient.ui.scan.ScanViewModel
+import com.example.moulamanagerclient.ui.theme.Colors
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -129,7 +131,8 @@ fun Scan(scanViewModel: ScanViewModel) {
 
                 Divider(
                     modifier = Modifier.padding(16.dp),
-                    thickness = 1.dp
+                    thickness = 1.dp,
+                    color = Colors.YELLOW_1
                 )
 
                 OutlinedTextField(
@@ -168,7 +171,8 @@ fun Scan(scanViewModel: ScanViewModel) {
 
                 Divider(
                     modifier = Modifier.padding(16.dp),
-                    thickness = 1.dp
+                    thickness = 1.dp,
+                    color = Colors.YELLOW_1
                 )
 
                 OutlinedTextField(
@@ -187,15 +191,19 @@ fun Scan(scanViewModel: ScanViewModel) {
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.Bottom
                 ) {
-                    OutlinedButton(
+                    Button(
                         onClick = {
                             coroutineScope.launch {
                                 modalBottomSheetState.hide()
                                 scanViewModel.reset()
                             }
                         },
+                        border = BorderStroke(1.dp, Colors.YELLOW_1),
                         modifier = Modifier.width(100.dp),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            contentColor = Colors.YELLOW_1,
+                        )
                     ) {
                         Text(
                             text = "Cancel",
@@ -219,7 +227,10 @@ fun Scan(scanViewModel: ScanViewModel) {
                             }
                         },
                         modifier = Modifier.width(100.dp),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Colors.YELLOW_1
+                        )
                     ) {
                         Text(
                             text = "Add",
@@ -251,7 +262,8 @@ fun Scan(scanViewModel: ScanViewModel) {
 
                 Divider(
                     modifier = Modifier.padding(16.dp),
-                    thickness = 1.dp
+                    thickness = 1.dp,
+                    color = Colors.YELLOW_1
                 )
 
                 Text(
@@ -274,7 +286,8 @@ fun Scan(scanViewModel: ScanViewModel) {
 
                 Divider(
                     modifier = Modifier.padding(16.dp),
-                    thickness = 1.dp
+                    thickness = 1.dp,
+                    color = Colors.YELLOW_1
                 )
 
                 Text(
@@ -285,7 +298,8 @@ fun Scan(scanViewModel: ScanViewModel) {
                 )
 
                 Divider(
-                    thickness = 1.dp
+                    thickness = 1.dp,
+                    color = Colors.YELLOW_1
                 )
 
                 Row(
@@ -315,7 +329,8 @@ fun Scan(scanViewModel: ScanViewModel) {
                 }
 
                 Divider(
-                    thickness = 1.dp
+                    thickness = 1.dp,
+                    color = Colors.YELLOW_1
                 )
                 Row(
                     modifier = Modifier.padding(16.dp),
@@ -344,15 +359,19 @@ fun Scan(scanViewModel: ScanViewModel) {
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.Bottom
                 ) {
-                    OutlinedButton(
+                    Button(
                         onClick = {
                             coroutineScope.launch {
                                 modalBottomSheetState.hide()
                                 scanViewModel.reset()
                             }
                         },
+                        border = BorderStroke(1.dp, Colors.YELLOW_1),
                         modifier = Modifier.width(100.dp),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            contentColor = Colors.YELLOW_1,
+                        )
                     ) {
                         Text(
                             text = "Cancel",
@@ -374,7 +393,10 @@ fun Scan(scanViewModel: ScanViewModel) {
                             }
                         },
                         modifier = Modifier.width(100.dp),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Colors.YELLOW_1
+                        )
                     ) {
                         Text(
                             text = "Add",
