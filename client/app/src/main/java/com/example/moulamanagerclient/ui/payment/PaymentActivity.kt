@@ -1,10 +1,17 @@
 package com.example.moulamanagerclient.ui.payment
 
 import android.util.Log
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.rememberPaymentSheet
@@ -22,7 +29,14 @@ fun PaymentActivity(
 		viewModel.fetchPaymentIntentAndCustomerConfig()
 	}
 
-	PaymentButton(viewModel, paymentSheet, paymentIntentClientSecret, customerConfig)
+	Scaffold(
+		modifier = Modifier.fillMaxSize().padding(PaddingValues(16.dp)),
+	) {
+		paddingValues -> Column(modifier = Modifier.padding(paddingValues)) {
+			PaymentButton(viewModel, paymentSheet, paymentIntentClientSecret, customerConfig)
+		}
+	}
+
 }
 
 private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
