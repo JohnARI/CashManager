@@ -3,6 +3,7 @@ package com.example.moulamanagerclient.ui.theme
 import androidx.compose.ui.graphics.Color
 
 object Colors {
+    val RED = Color(0xFFEF4545)
     val YELLOW_0 = Color(0xFFBE9427)
     val YELLOW_1 = Color(0xFFD8AD41)
     val YELLOW_2 = Color(0xFFE1BF6B)
@@ -18,6 +19,5 @@ object Colors {
     val GRAY_2 = Color(0xFFBE9427)
     val BLACK = Color(0xFF000000)
     val WHITE = Color(0xFFFFFFFF)
-    val RED = Color(0xFFFF0000)
 }
 
