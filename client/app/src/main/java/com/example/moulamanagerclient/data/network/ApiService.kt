@@ -6,18 +6,19 @@ import com.example.moulamanagerclient.data.model.auth.LoginResponse
 import com.example.moulamanagerclient.data.model.auth.RegisterRequest
 import com.example.moulamanagerclient.data.model.cartItem.CartItem
 import com.example.moulamanagerclient.data.model.cartItem.UpdateCartItemRequest
+import com.example.moulamanagerclient.data.model.cartItem.AddProductToCartRequest
 import com.example.moulamanagerclient.data.model.payment.PaymentIntentResponse
+import com.example.moulamanagerclient.data.model.product.CreateProductRequest
 import com.example.moulamanagerclient.data.model.product.ProductResponse
-import com.stripe.android.model.PaymentIntent
 import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiService {
-	@GET(ApiEndpoints.BARCODE)
-	suspend fun getProductsByBarcode(@Path("barcode") barcode: String): Response<ProductResponse>
+    @GET(ApiEndpoints.BARCODE)
+    suspend fun getProductsByBarcode(@Path("barcode") barcode: String): Response<ProductResponse>
 
-	@GET(ApiEndpoints.PRODUCTS)
-	suspend fun getProducts(@Query("page") page: Int, @Query("size") size: Int): Response<Pagination<ProductResponse>>
+    @GET(ApiEndpoints.PRODUCTS)
+    suspend fun getProducts(@Query("page") page: Int, @Query("size") size: Int): Response<Pagination<ProductResponse>>
 
 	@GET(ApiEndpoints.GET_CART_ITEM)
 	suspend fun getCartItem(): Response<Pagination<CartItem>>
@@ -34,13 +35,21 @@ interface ApiService {
 		@Query("page") page: Int,
 		@Query("size") size: Int
 	): Response<Pagination<ProductResponse>>
+    @POST(ApiEndpoints.PRODUCTS)
+    suspend fun createProduct(@Body request: CreateProductRequest): Response<ProductResponse>
 
-	@POST(ApiEndpoints.LOGIN)
-	suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
+    @POST(ApiEndpoints.LOGIN)
+    suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 
-	@POST(ApiEndpoints.REGISTER)
-	suspend fun register(@Body request: RegisterRequest): Response<LoginResponse>
+    @POST(ApiEndpoints.CART_ITEMS_BARCODE)
+    suspend fun addProductToCartItem(
+        @Body request: AddProductToCartRequest,
+        @Path("barcode") barcode: String
+    ): Response<ProductResponse>
 
-	@POST(ApiEndpoints.CREATE_PAYMENT_INTENT)
-	suspend fun createPaymentIntent(): Response<PaymentIntentResponse>
+    @POST(ApiEndpoints.REGISTER)
+    suspend fun register(@Body request: RegisterRequest): Response<LoginResponse>
+
+    @POST(ApiEndpoints.CREATE_PAYMENT_INTENT)
+    suspend fun createPaymentIntent(): Response<PaymentIntentResponse>
 }
