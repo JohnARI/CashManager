@@ -17,7 +17,8 @@ import com.example.moulamanagerclient.ui.theme.Colors
 fun CartComponent(
     setUpdateQuantity: (CartItem) -> Unit,
     cartItemList: List<CartItem>?,
-    getTotal: () -> String
+    getTotal: () -> String,
+    getSumForItem: (CartItem) -> String,
 ) {
     Column{
         BoxWithConstraints {
@@ -27,7 +28,8 @@ fun CartComponent(
                     CartItemRow(
                         cartItem = cartItem,
                         isOdd = if (index % 2 == 0) true else false,
-                        onValueChange = setUpdateQuantity
+                        onValueChange = setUpdateQuantity,
+                        getSumForItem = getSumForItem,
                     )
                 }
             }

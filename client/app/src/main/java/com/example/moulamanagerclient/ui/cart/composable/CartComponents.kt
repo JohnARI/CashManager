@@ -14,6 +14,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
@@ -36,6 +37,7 @@ fun CartItemRow(
     cartItem: CartItem,
     isOdd: Boolean,
     onValueChange: (CartItem) -> Unit,
+    getSumForItem: (CartItem) -> String,
 ) {
     val delete = SwipeAction(
         icon = rememberVectorPainter(Icons.TwoTone.Delete),
@@ -81,7 +83,7 @@ fun CartItemRow(
                     Text("x", color = Colors.WHITE)
                     Text(cartItem.product.name, color = Colors.WHITE)
                 }
-                Text(cartItem.product.price.toString() + " €", color = Colors.WHITE)
+                Text(getSumForItem(cartItem) + " €", color = Colors.WHITE)
             }
         }
     }
@@ -112,7 +114,13 @@ fun InputField(
         modifier = Modifier
             .width(70.dp)
             .height(60.dp)
-            .padding(vertical = 5.dp),
+            .padding(vertical = 5.dp)
+            .onFocusChanged { focusState ->
+                if (!focusState.isFocused) {
+                    val quantity = currentValue.toIntOrNull() ?: 0
+                    onValueChange(cartItem.copy(quantity = quantity))
+                }
+            },
         value = currentValue,
         onValueChange = { newValue -> if(newValue.length > 2) currentValue = "99" else currentValue = newValue },
         keyboardOptions = KeyboardOptions.Default.copy(

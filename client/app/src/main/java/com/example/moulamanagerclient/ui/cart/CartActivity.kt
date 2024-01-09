@@ -2,6 +2,7 @@ package com.example.moulamanagerclient.ui.cart
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.moulamanagerclient.R
 import com.example.moulamanagerclient.ui.auth.composables.AuthTopBar
@@ -49,9 +51,14 @@ fun CartActivity() {
 				CartComponent(
 					setUpdateQuantity = { viewModel.onInputChange(it) },
 					cartItemList = itemList,
-					getTotal = { viewModel.getTotal() }
+					getTotal = { viewModel.getTotal() },
+					getSumForItem = { viewModel.getSumForItem(it) }
 				)
-				PaymentButton(viewModelPayment, paymentSheet, paymentIntentClientSecret, customerConfig)
+				Box(modifier = Modifier
+					.padding(horizontal = 20.dp, vertical = 5.dp)
+				){
+					PaymentButton(viewModelPayment, paymentSheet, paymentIntentClientSecret, customerConfig)
+				}
 			}
 		}
 	}

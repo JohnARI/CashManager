@@ -50,6 +50,11 @@ constructor(
 		return String.format("%.2f", total)
 	}
 
+	fun getSumForItem(item: CartItem): String {
+		val sum = item.quantity * item.product.price
+		return String.format("%.2f", sum)
+	}
+
 
 	private fun deleteItemList() {
 		viewModelScope.launch {
